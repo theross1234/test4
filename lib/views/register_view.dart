@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:test4/constant/routes.dart';
 import '../firebase_options.dart';
 import 'dart:developer' as devtools show log;
 
@@ -62,7 +63,7 @@ class _RegisterViewState extends State<RegisterView> {
                     .createUserWithEmailAndPassword(email: email, password: password);
                 devtools.log(userCredential.toString());
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/notes/', (route) => false);
+                    notesRoute, (route) => false);
               }on FirebaseAuthException catch (e){
                 if (e.code == 'weak-password') {
                   devtools.log('week password');
@@ -76,7 +77,7 @@ class _RegisterViewState extends State<RegisterView> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login/', (route) => false);
+                  loginRoute, (route) => false);
             },
             child: const Text('already register ? login year'),
           )
