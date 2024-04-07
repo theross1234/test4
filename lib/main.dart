@@ -5,7 +5,7 @@ import 'package:test4/firebase_options.dart';
 import 'package:test4/views/login_view.dart';
 import 'package:test4/views/register_view.dart';
 import 'package:test4/views/VerifyemailView.dart';
-import 'dart:developer' as devtools show log;
+//import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +19,7 @@ void main() {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView(),
       },
     ),
   );
@@ -41,10 +42,10 @@ class HomePage extends StatelessWidget {
               if(user.emailVerified){
                 return const NotesView();
               }else{
-                return const VerifyEmailViews();
+                return const LoginView();
               }
             }else{
-              return const LoginView();
+              return const VerifyEmailViews();
             }
             return const Text('done');
           default:
@@ -77,7 +78,7 @@ class _NotesViewState extends State<NotesView> {
               switch (value){
                 case MenuAction.logout:
                   final shouldLogout = await showlogOutDialog(context);
-                  devtools.log(shouldLogout.toString());
+                 // devtools.log(shouldLogout.toString());
                   if (shouldLogout){
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context)
