@@ -1,8 +1,7 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test4/constant/routes.dart';
-import '../firebase_options.dart';
+import 'package:test4/utilities/show_error_dialog.dart';
 import 'dart:developer' as devtools show log;
 
 class RegisterView extends StatefulWidget {
@@ -13,7 +12,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  @override
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -59,16 +57,30 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try{
-                final userCredential = await FirebaseAuth.instance
+                await FirebaseAuth.instance
                     .createUserWithEmailAndPassword(email: email, password: password);
-                devtools.log(userCredential.toString());
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    notesRoute, (route) => false);
-              }on FirebaseAuthException catch (e){
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                Navigator.of(context).pushNamed(
+                    verifyEmailRoute);
+              }on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
+                  await showErrorDialog(context, 'weak password');
                   devtools.log('week password');
-                }else if (e.code == 'email-is-already-in-use'){
+                } else if (e.code == 'email-is-already-in-use') {
+                  await showErrorDialog(
+                      context, 'this email is already in use');
                   devtools.log('email is already in suse');
+                } else if (e.code == 'invalid-email') {
+                  await showErrorDialog(
+                      context, 'invalid email');
+                  devtools.log('invalid email');
+                } else if (e.code == 'invalid-credentials') {
+                  await showErrorDialog(
+                      context, 'invalid credential');
+                  devtools.log('invalid credential');
+                }  else {
+                  await showErrorDialog(context, 'Error ${e.code}',);
                 }
               }
             },
