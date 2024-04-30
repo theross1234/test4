@@ -43,10 +43,10 @@ class HomePage extends StatelessWidget {
               if(user.emailVerified){
                 return const NotesView();
               }else{
-                return const LoginView();
+                return const VerifyEmailViews();
               }
             }else{
-              return const VerifyEmailViews();
+              return const LoginView();
             }
             return const Text('done');
           default:
@@ -129,6 +129,7 @@ Future<bool> showlogOutDialog(BuildContext context){
       },
   ).then((value) => value ?? false);
 }
+
 
 
 
